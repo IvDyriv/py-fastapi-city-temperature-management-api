@@ -147,3 +147,14 @@ GET /temperatures?city_id=1
 
 - Temperature fetching is implemented using asynchronous HTTP requests.
 - Each temperature update creates a new record, allowing temperature history tracking.
+
+## Design choices
+- Project is split into layers: API routers, CRUD/database logic, and external service client.
+- SQLite is used for simplicity and fast local setup.
+- SQLAlchemy ORM models represent database tables; Pydantic schemas represent request/response shapes.
+- Dependency injection (`Depends(get_db)`) is used to provide one DB session per request.
+
+## Assumptions
+- External temperature data is fetched from Open-Meteo (no API key required).
+- `City.additional_info` stores coordinates in the format "lat,lon" (example: "51.0447,-114.0719").
+- Cities with missing/invalid coordinates are skipped during `/temperatures/update`.
