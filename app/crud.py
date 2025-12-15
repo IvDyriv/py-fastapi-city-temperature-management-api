@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from datetime import datetime
 from app import models, schemas
 
 
@@ -38,3 +38,18 @@ def list_temperatures(
         query = query.filter(models.Temperature.city_id == city_id)
 
     return query.order_by(models.Temperature.date_time.desc()).all()
+
+def create_temperature(
+    db,
+    city_id: int,
+    temperature: float,
+) -> models.Temperature:
+    temp = models.Temperature(
+        city_id=city_id,
+        temperature=temperature,
+        date_time=datetime.utcnow(),
+    )
+    db.add(temp)
+    db.commit()
+    db.refresh(temp)
+    return temp
